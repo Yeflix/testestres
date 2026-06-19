@@ -69,7 +69,7 @@ function renderRows(rows) {
   empty.classList.toggle("hidden", rows.length > 0);
 
   tb.innerHTML = rows.map((r, i) => {
-    const date = r.createdAt ? r.createdAt.toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" }) : "—";
+    const date = r.createdAt ? r.createdAt.toLocaleString("es-VE", { dateStyle: "short", timeStyle: "short" }) : "—";
     const typ = r.userId
       ? `<span class="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-semibold">Registrado</span>`
       : `<span class="px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 text-[11px] font-semibold">Anónimo</span>`;
@@ -124,7 +124,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   // Hoja 1: Resumen completo (incluye datos personales + preguntas seleccionadas)
   const summary = ALL.map(r => {
     const row = {
-      Fecha: r.createdAt ? r.createdAt.toLocaleString("es-MX") : "",
+      Fecha: r.createdAt ? r.createdAt.toLocaleString("es-VE") : "",
       Nombre: r.name || "",
       Apellido: r.lastName || "",
       Correo: r.email || "",
@@ -146,7 +146,7 @@ document.getElementById("exportBtn").addEventListener("click", () => {
   // Hoja 2: Detalle vertical (una fila por respuesta) - para análisis pivote
   const detailLong = [];
   ALL.forEach(r => {
-    const fecha = r.createdAt ? r.createdAt.toLocaleString("es-MX") : "";
+    const fecha = r.createdAt ? r.createdAt.toLocaleString("es-VE") : "";
     QUESTIONS.forEach((q, idx) => {
       const v = r.answers?.[idx];
       detailLong.push({

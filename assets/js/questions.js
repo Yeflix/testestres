@@ -1,4 +1,4 @@
-// Preguntas y lógica de scoring (NOM-035 / IMSS)
+// Preguntas y lógica de scoring (basado en OMS/OIT — adaptado para Venezuela / LOPCYMAT)
 export const QUESTIONS = [
   "Imposibilidad de conciliar el sueño",
   "Jaquecas y dolores de cabeza",

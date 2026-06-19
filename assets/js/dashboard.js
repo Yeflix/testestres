@@ -69,7 +69,7 @@ function renderHistory(items) {
   if (!items.length) { empty.classList.remove("hidden"); table.classList.add("hidden"); return; }
 
   body.innerHTML = items.map((it, i) => {
-    const date = it.createdAt ? it.createdAt.toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" }) : "—";
+    const date = it.createdAt ? it.createdAt.toLocaleString("es-VE", { dateStyle: "medium", timeStyle: "short" }) : "—";
     const next = items[i+1];
     const diff = next ? it.score - next.score : null;
     const tr = diff === null ? "—" : diff < 0 ? `<span class="text-emerald-600">↓ ${Math.abs(diff)}</span>` : diff > 0 ? `<span class="text-red-600">↑ ${diff}</span>` : `<span class="text-slate-500">=</span>`;
