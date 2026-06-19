@@ -1,0 +1,21 @@
+{
+  "name": "tes-estres",
+  "version": "1.0.0",
+  "description": "Sitio estático con Firebase Auth + Firestore.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yeflix/testestres.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Yeflix/testestres/issues"
+  },
+  "homepage": "https://github.com/Yeflix/testestres#readme"
+}
