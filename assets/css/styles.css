@@ -30,3 +30,17 @@ body { font-family: 'Inter', system-ui, sans-serif; background: hsl(220 33% 98%)
 .toast.show { opacity:1; transform: translateY(0); }
 .toast.error { background: #b91c1c; }
 .toast.success { background: #047857; }
+
+/* ---------- Responsive (mobile-first) ---------- */
+@media (max-width: 480px) {
+  .scale-btn .swatch { border-radius: .5rem; font-size: .85rem; }
+  .question-card { padding: 1rem !important; }
+  .question-card .grid.grid-cols-6 { gap: .25rem !important; }
+  .modal-box { padding: 1.25rem; border-radius: 1rem; }
+  .toast { left: 12px; right: 12px; bottom: 12px; text-align: center; }
+}
+
+/* Tablas con scroll horizontal y celdas legibles */
+@media (max-width: 640px) {
+  table th, table td { padding-left: .75rem !important; padding-right: .75rem !important; white-space: nowrap; }
+}

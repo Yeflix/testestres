@@ -26,12 +26,12 @@ onAuthStateChanged(auth, (u) => {
 
 function render() {
   container.innerHTML = QUESTIONS.map((q, i) => `
-    <div class="question-card rounded-2xl border border-slate-200 p-5 transition" data-q="${i}">
-      <div class="flex gap-3 items-start mb-4">
+    <div class="question-card rounded-2xl border border-slate-200 p-4 sm:p-5 transition" data-q="${i}">
+      <div class="flex gap-3 items-start mb-3 sm:mb-4">
         <span class="shrink-0 size-7 rounded-full bg-slate-900 text-white text-xs font-mono font-bold flex items-center justify-center">${String(i+1).padStart(2,"0")}</span>
-        <p class="text-base font-medium leading-snug">${q}</p>
+        <p class="text-sm sm:text-base font-medium leading-snug">${q}</p>
       </div>
-      <div class="grid grid-cols-6 gap-2">
+      <div class="grid grid-cols-6 gap-1.5 sm:gap-2">
         ${[1,2,3,4,5,6].map(v => `
           <label class="scale-btn" data-v="${v}" title="${SCALE_LABELS[v-1]}">
             <input type="radio" name="q${i}" value="${v}" />

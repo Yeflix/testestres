@@ -11,14 +11,14 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
 
-<main class="mx-auto max-w-5xl px-6 py-10 animate-reveal">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
-    <div>
+<main class="mx-auto max-w-5xl px-4 sm:px-6 py-8 sm:py-10 animate-reveal">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+    <div class="min-w-0">
       <span class="font-mono text-[11px] text-slate-500 uppercase tracking-widest">Panel personal</span>
-      <h1 class="mt-1 text-3xl md:text-4xl font-extrabold tracking-tight">Mi monitoreo</h1>
-      <p class="mt-2 text-slate-600" id="welcome">Hola <span id="userName"></span>, aquí está tu evolución.</p>
+      <h1 class="mt-1 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Mi monitoreo</h1>
+      <p class="mt-2 text-sm sm:text-base text-slate-600" id="welcome">Hola <span id="userName"></span>, aquí está tu evolución.</p>
     </div>
-    <a href="index.html" class="rounded-full bg-slate-900 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800">
+    <a href="index.html" class="self-start sm:self-auto rounded-full bg-slate-900 text-white px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold hover:bg-slate-800 whitespace-nowrap">
       <i class="fas fa-redo mr-1"></i> Hacer test de nuevo
     </a>
   </div>
@@ -28,7 +28,7 @@
 
   <!-- History -->
   <section class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+    <div class="px-4 sm:px-6 py-4 border-b border-slate-200 flex items-center justify-between">
       <h2 class="font-bold">Historial de evaluaciones</h2>
       <span id="countBadge" class="text-xs font-mono text-slate-500"></span>
     </div>

@@ -12,17 +12,17 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
 
-<main class="mx-auto max-w-7xl px-6 py-10 animate-reveal">
-  <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
-    <div>
+<main class="mx-auto max-w-7xl px-4 sm:px-6 py-8 sm:py-10 animate-reveal">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+    <div class="min-w-0">
       <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
         <i class="fas fa-shield-halved"></i> Panel Admin
       </span>
-      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Personas registradas</h1>
-      <p class="mt-2 text-slate-600">Visualiza todos los tests realizados y exporta los datos.</p>
+      <h1 class="mt-2 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Personas registradas</h1>
+      <p class="mt-2 text-sm sm:text-base text-slate-600">Visualiza todos los tests realizados y exporta los datos.</p>
     </div>
     <div class="flex gap-2">
-      <button id="exportBtn" class="rounded-full bg-emerald-600 text-white px-6 py-3 text-sm font-bold hover:bg-emerald-700">
+      <button id="exportBtn" class="w-full sm:w-auto rounded-full bg-emerald-600 text-white px-5 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-bold hover:bg-emerald-700">
         <i class="fas fa-file-excel mr-1"></i> Exportar Excel
       </button>
     </div>
