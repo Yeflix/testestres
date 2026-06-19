@@ -1,0 +1,34 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() {
+      return isSignedIn() &&
+             exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+    }
+
+    // Cualquiera puede crear una respuesta (incluso anónimos del link).
+    // Solo el dueño (userId) o un admin pueden leer.
+    match /responses/{id} {
+      allow create: if request.resource.data.keys().hasOnly(
+                       ['email','name','phone','userId','isAnonymous','answers','score','level','createdAt'])
+                    && request.resource.data.answers.size() == 12
+                    && request.resource.data.score is int
+                    && request.resource.data.score >= 0
+                    && request.resource.data.score <= 72;
+
+      allow read: if isAdmin()
+                  || (isSignedIn() && resource.data.userId == request.auth.uid)
+                  || (isSignedIn() && resource.data.email == request.auth.token.email.lower());
+
+      allow update, delete: if isAdmin();
+    }
+
+    // Solo admins pueden leer la lista de admins
+    match /admins/{email} {
+      allow read: if isSignedIn();   // necesario para que cada usuario verifique su propio rol
+      allow write: if isAdmin();
+    }
+  }
+}

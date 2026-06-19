@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi monitoreo · Astronauta Emocional</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<main class="mx-auto max-w-5xl px-6 py-10 animate-reveal">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
+    <div>
+      <span class="font-mono text-[11px] text-slate-500 uppercase tracking-widest">Panel personal</span>
+      <h1 class="mt-1 text-3xl md:text-4xl font-extrabold tracking-tight">Mi monitoreo</h1>
+      <p class="mt-2 text-slate-600" id="welcome">Hola <span id="userName"></span>, aquí está tu evolución.</p>
+    </div>
+    <a href="index.html" class="rounded-full bg-slate-900 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800">
+      <i class="fas fa-redo mr-1"></i> Hacer test de nuevo
+    </a>
+  </div>
+
+  <!-- Stat cards -->
+  <section id="statsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"></section>
+
+  <!-- History -->
+  <section class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+      <h2 class="font-bold">Historial de evaluaciones</h2>
+      <span id="countBadge" class="text-xs font-mono text-slate-500"></span>
+    </div>
+    <div id="historyEmpty" class="hidden p-10 text-center text-slate-500">
+      <i class="fas fa-clipboard-list text-3xl mb-3 opacity-50"></i>
+      <p>Aún no has completado ningún test.</p>
+      <a href="index.html" class="inline-block mt-4 rounded-full bg-slate-900 text-white px-5 py-2 text-sm font-bold hover:bg-slate-800">Hacer mi primer test</a>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm" id="historyTable">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+          <tr>
+            <th class="text-left px-6 py-3 font-semibold">Fecha</th>
+            <th class="text-left px-6 py-3 font-semibold">Puntaje</th>
+            <th class="text-left px-6 py-3 font-semibold">Nivel</th>
+            <th class="text-left px-6 py-3 font-semibold">Tendencia</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="text-center mt-8 text-xs text-slate-500">
+    Recomendamos repetir el test al menos una vez al mes para monitorear tu evolución.
+  </p>
+</main>
+
+<script type="module" src="assets/js/dashboard.js"></script>
+<script type="module">
+  import { mountNav } from "./assets/js/nav.js";
+  mountNav("");
+</script>
+</body>
+</html>

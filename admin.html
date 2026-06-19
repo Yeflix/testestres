@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel Admin · Astronauta Emocional</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<main class="mx-auto max-w-7xl px-6 py-10 animate-reveal">
+  <div class="flex items-end justify-between flex-wrap gap-4 mb-8">
+    <div>
+      <span class="inline-flex items-center gap-1 rounded-full bg-amber-100 text-amber-800 px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
+        <i class="fas fa-shield-halved"></i> Panel Admin
+      </span>
+      <h1 class="mt-2 text-3xl md:text-4xl font-extrabold tracking-tight">Personas registradas</h1>
+      <p class="mt-2 text-slate-600">Visualiza todos los tests realizados y exporta los datos.</p>
+    </div>
+    <div class="flex gap-2">
+      <button id="exportBtn" class="rounded-full bg-emerald-600 text-white px-6 py-3 text-sm font-bold hover:bg-emerald-700">
+        <i class="fas fa-file-excel mr-1"></i> Exportar Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <section id="adminStats" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8"></section>
+
+  <!-- Filtros -->
+  <div class="rounded-2xl border border-slate-200 bg-white p-4 mb-6 flex flex-wrap gap-3 items-center">
+    <input id="searchInput" placeholder="Buscar por correo o nombre..." class="flex-1 min-w-[220px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+    <select id="levelFilter" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
+      <option value="">Todos los niveles</option>
+      <option>Sin estrés</option>
+      <option>Estrés leve</option>
+      <option>Estrés moderado</option>
+      <option>Estrés grave</option>
+      <option>Estrés muy grave</option>
+    </select>
+    <select id="typeFilter" class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
+      <option value="">Todos</option>
+      <option value="registered">Registrados</option>
+      <option value="anonymous">Anónimos</option>
+    </select>
+  </div>
+
+  <!-- Tabla -->
+  <section class="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="bg-slate-50 text-[11px] uppercase tracking-widest text-slate-500">
+          <tr>
+            <th class="text-left px-4 py-3 font-semibold w-10"></th>
+            <th class="text-left px-4 py-3 font-semibold">Fecha</th>
+            <th class="text-left px-4 py-3 font-semibold">Nombre</th>
+            <th class="text-left px-4 py-3 font-semibold">Correo</th>
+            <th class="text-left px-4 py-3 font-semibold">Teléfono</th>
+            <th class="text-left px-4 py-3 font-semibold">Puntaje</th>
+            <th class="text-left px-4 py-3 font-semibold">Nivel</th>
+            <th class="text-left px-4 py-3 font-semibold">Tipo</th>
+          </tr>
+        </thead>
+        <tbody id="adminTbody" class="divide-y divide-slate-100"></tbody>
+      </table>
+    </div>
+    <div id="adminEmpty" class="hidden p-10 text-center text-slate-500">Sin resultados</div>
+  </section>
+</main>
+
+<script type="module" src="assets/js/admin.js"></script>
+<script type="module">
+  import { mountNav } from "./assets/js/nav.js";
+  mountNav("");
+</script>
+</body>
+</html>

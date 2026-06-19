@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Iniciar sesión · Astronauta Emocional</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+<main class="mx-auto max-w-md px-6 py-12 animate-reveal">
+  <div class="text-center mb-8">
+    <a href="index.html" class="inline-flex items-center gap-3">
+      <div class="size-10 rounded-full bg-gradient-to-tr from-slate-900 via-emerald-500 to-teal-400"></div>
+      <span class="font-bold uppercase tracking-tight">Astronauta Emocional</span>
+    </a>
+  </div>
+
+  <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
+    <div class="flex border-b border-slate-200 mb-6">
+      <button data-tab="login" class="tab-btn flex-1 py-3 text-sm font-semibold border-b-2 border-slate-900">Iniciar sesión</button>
+      <button data-tab="register" class="tab-btn flex-1 py-3 text-sm font-semibold border-b-2 border-transparent text-slate-500">Crear cuenta</button>
+    </div>
+
+    <!-- LOGIN -->
+    <form id="loginForm" class="space-y-4">
+      <h1 class="text-2xl font-bold">Bienvenido de vuelta</h1>
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Correo</label>
+        <input type="email" id="loginEmail" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Contraseña</label>
+        <input type="password" id="loginPass" required minlength="6" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+      <button type="submit" class="w-full rounded-full bg-slate-900 text-white py-3 text-sm font-bold hover:bg-slate-800">Entrar</button>
+      <button type="button" id="forgotBtn" class="w-full text-xs text-slate-500 hover:text-slate-900">¿Olvidaste tu contraseña?</button>
+    </form>
+
+    <!-- REGISTER -->
+    <form id="registerForm" class="space-y-4 hidden">
+      <h1 class="text-2xl font-bold">Crear cuenta</h1>
+      <p class="text-sm text-slate-600">Guarda tu historial y recibe monitoreo mensual de tu nivel de estrés.</p>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[11px] font-bold uppercase text-slate-500">Nombre *</label>
+          <input type="text" id="regName" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+        </div>
+        <div>
+          <label class="text-[11px] font-bold uppercase text-slate-500">Apellido *</label>
+          <input type="text" id="regLastName" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Correo *</label>
+        <input type="email" id="regEmail" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Contraseña * (mín. 6)</label>
+        <input type="password" id="regPass" required minlength="6" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-[11px] font-bold uppercase text-slate-500">Edad *</label>
+          <input type="number" id="regAge" required min="14" max="100" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+        </div>
+        <div>
+          <label class="text-[11px] font-bold uppercase text-slate-500">Sexo *</label>
+          <select id="regGender" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none">
+            <option value="">Selecciona</option>
+            <option value="Mujer">Mujer</option>
+            <option value="Hombre">Hombre</option>
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Cédula (opcional)</label>
+        <input type="text" id="regCedula" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500">Tiempo laborando en su vida (opcional)</label>
+        <input type="text" id="regWorkTime" placeholder="Ej: 5 años" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+
+      <button type="submit" class="w-full rounded-full bg-slate-900 text-white py-3 text-sm font-bold hover:bg-slate-800">Crear cuenta</button>
+    </form>
+
+    <div class="my-6 flex items-center gap-3 text-xs text-slate-400">
+      <span class="flex-1 h-px bg-slate-200"></span>O<span class="flex-1 h-px bg-slate-200"></span>
+    </div>
+    <button id="googleBtn" class="w-full rounded-full border border-slate-200 py-3 text-sm font-semibold hover:bg-slate-50 flex items-center justify-center gap-2">
+      <i class="fab fa-google text-rose-500"></i> Continuar con Google
+    </button>
+  </div>
+
+  <p class="text-center mt-6 text-xs text-slate-500">
+    <a href="index.html" class="hover:text-slate-900">← Volver al test</a>
+  </p>
+</main>
+
+<script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>

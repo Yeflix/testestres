@@ -1,0 +1,32 @@
+:root {
+  --color-1:#10b981; --color-2:#14b8a6; --color-3:#eab308;
+  --color-4:#f97316; --color-5:#ef4444; --color-6:#991b1b;
+}
+body { font-family: 'Inter', system-ui, sans-serif; background: hsl(220 33% 98%); color: hsl(222 47% 11%); }
+@keyframes fadeInUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
+.animate-reveal { animation: fadeInUp .6s cubic-bezier(.19,1,.22,1) both; }
+
+.scale-btn input { display:none; }
+.scale-btn .swatch {
+  aspect-ratio: 1/1; width: 100%; border-radius: .75rem;
+  border: 2px solid transparent; transition: all .2s ease; cursor: pointer;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:600; font-family:'JetBrains Mono', monospace;
+}
+.scale-btn:hover .swatch { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,.08); }
+.scale-btn input:checked + .swatch { transform: translateY(-2px); box-shadow: 0 0 0 3px white, 0 0 0 5px currentColor; }
+.scale-btn[data-v="1"] .swatch { background:#ecfdf5; border-color:rgba(16,185,129,.25); color:#047857; }
+.scale-btn[data-v="2"] .swatch { background:#f0fdfa; border-color:rgba(20,184,166,.25); color:#0f766e; }
+.scale-btn[data-v="3"] .swatch { background:#fefce8; border-color:rgba(234,179,8,.3);  color:#a16207; }
+.scale-btn[data-v="4"] .swatch { background:#fff7ed; border-color:rgba(249,115,22,.3); color:#c2410c; }
+.scale-btn[data-v="5"] .swatch { background:#fef2f2; border-color:rgba(239,68,68,.3);  color:#b91c1c; }
+.scale-btn[data-v="6"] .swatch { background:#fee2e2; border-color:rgba(153,27,27,.35); color:#7f1d1d; }
+.question-card.error { border-color:#ef4444 !important; background:#fef2f2; }
+
+.modal-overlay { position:fixed; inset:0; background:rgba(15,23,42,.6); backdrop-filter: blur(4px); display:flex; align-items:center; justify-content:center; z-index:9999; }
+.modal-box { background:white; padding:2rem; border-radius:1.25rem; max-width:460px; width:90%; box-shadow:0 25px 60px rgba(0,0,0,.2); }
+
+.toast { position: fixed; bottom: 20px; right: 20px; background: #0f172a; color:white; padding: 12px 18px; border-radius: 10px; font-size: 14px; z-index:10000; opacity:0; transform: translateY(8px); transition: all .25s ease; }
+.toast.show { opacity:1; transform: translateY(0); }
+.toast.error { background: #b91c1c; }
+.toast.success { background: #047857; }
