@@ -92,18 +92,18 @@ form.addEventListener("submit", async (e) => {
       try {
         const psnap = await getDoc(doc(db, "users", currentUser.uid));
         if (psnap.exists()) profile = psnap.data() || {};
-      } catch (_) {}
+      } catch (_) {
+        // Fallará silenciosamente si las reglas de Firestore bloquean la lectura, 
+        // permitiendo que el flujo principal continúe.
+      }
     }
 
+    // Payload ajustado para cumplir con: 
+    // ['email','name','phone','userId','isAnonymous','answers','score','level','createdAt']
     await addDoc(collection(db, "responses"), {
       email,
       name: profile.name || nameInput.value.trim() || null,
-      lastName: profile.lastName || null,
       phone: phoneInput.value.trim() || null,
-      cedula: profile.cedula || null,
-      age: profile.age || null,
-      gender: profile.gender || null,
-      workTime: profile.workTime || null,
       userId: currentUser?.uid || null,
       isAnonymous: !currentUser,
       answers,
@@ -111,6 +111,7 @@ form.addEventListener("submit", async (e) => {
       level: result.level,
       createdAt: serverTimestamp(),
     });
+    
     const params = new URLSearchParams({
       score: result.sum, level: result.level, email,
       from: currentUser ? "user" : "anon",
