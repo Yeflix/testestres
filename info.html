@@ -185,6 +185,7 @@
 
 <script type="module">
   import { mountNav } from "./assets/js/nav.js";
+  import { RESULTS_MAP } from "./assets/js/questions.js";
   mountNav("info");
 
   const params = new URLSearchParams(location.search);
@@ -194,28 +195,14 @@
     const email = params.get("email") || "";
     const from  = params.get("from") || "anon";
 
-    const colors = {
-      "Sin estrés":      { bg:"bg-emerald-50", border:"border-emerald-200", text:"text-emerald-700" },
-      "Estrés leve":     { bg:"bg-yellow-50",  border:"border-yellow-200",  text:"text-yellow-700"  },
-      "Estrés moderado": { bg:"bg-orange-50",  border:"border-orange-200",  text:"text-orange-700"  },
-      "Estrés grave":    { bg:"bg-red-50",     border:"border-red-200",     text:"text-red-700"     },
-      "Estrés muy grave":{ bg:"bg-red-100",    border:"border-red-300",     text:"text-red-900"     },
-    };
-    const descs = {
-      "Sin estrés":      "Es genial ver que estás logrando mantener el equilibrio y protegiendo tu bienestar en el día a día. Estar en este rango demuestra que has construido hábitos sólidos para gestionar tus responsabilidades sin descuidar tu tranquilidad. Para mantenerte en este estado óptimo, te aconsejo que sigas priorizando tus espacios de ocio, reconozcas activamente qué dinámicas te están funcionando y aproveches esta etapa de estabilidad para seguir creciendo personal y profesionalmente. ¡Sigue cuidando esa paz mental, es tu mejor recurso!",
-      "Estrés leve":     "Es completamente normal que la rutina empiece a acumular pequeñas tensiones, y qué bueno que te des el espacio para notar estas primeras alarmas que te da tu cuerpo. Recuerda que estás a muy buen tiempo de tomar las riendas de la situación antes de que la carga se vuelva pesada. Te aconsejo que hagas una pausa breve para identificar qué tareas o situaciones específicas te están robando la calma y comiences a aplicar técnicas sencillas de gestión del tiempo, como priorizar lo importante sobre lo urgente y regalarte pausas activas de cinco minutos durante el día. ¡Tienes la capacidad de reorganizarte y recuperar tu centro!",
-      "Estrés moderado": "Sé que estás haciendo un esfuerzo enorme por cumplir con todo y que la presión empieza a sentirse muy real, pero recuerda que tu bienestar siempre debe ir primero que cualquier obligación. Estás en un punto de resistencia donde tu cuerpo te pide un cambio, y escuchar esa señal es un acto de valentía, no de debilidad. Te aconsejo firmemente que empieces a establecer límites claros, aprendas a decir NO o a negociar plazos de entrega si te sientes desbordado, y dediques al menos diez minutos al día a desconectarte por completo y practicar respiraciones profundas. ¡Vales mucho más que tu productividad, date el permiso de bajar el ritmo!",
-      "Estrés grave":    "Lamento mucho que estés pasando por este nivel de desgaste físico y mental; quiero decirte que no estás solo y que es completamente válido sentir que la situación te supera en este momento. Estás experimentando un agotamiento profundo, pero esto no define tu capacidad, sino que es un recordatorio urgente de que necesitas cuidar de ti con compasión. Mi consejo es que bajes la marcha de inmediato, dejes de exigirte perfección y pongas como prioridad innegociable tus horas de sueño y descanso. Te animo de corazón a que busques el apoyo de un profesional de la salud o la psicología para que te acompañe a sanar y a recuperar tus energías de forma segura.",
-      "Estrés muy grave":"Por favor, detente un momento, respira y reconoce que tu salud está en una situación de alerta crítica que requiere toda tu atención inmediata. Quiero que sepas que tu vida y tu integridad física y mental son infinitamente más valiosas que cualquier meta, y que pedir ayuda en este instante es el paso más inteligente y fuerte que puedes dar. Te aconsejo con total urgencia que busques atención médica o psicológica prioritaria para contener los síntomas físicos de este colapso, y que comuniques de inmediato tu estado a las personas correspondientes en tu entorno para ajustar tus responsabilidades. Es momento de parar, protegerte y reestructurar tu bienestar; mereces vivir con tranquilidad.",
-    };
-
     const banner = document.getElementById("resultBanner");
     const card   = document.getElementById("resultCard");
-    const c = colors[level] || colors["Estrés leve"];
+    const bucket = RESULTS_MAP.find(r => r.level === level) || RESULTS_MAP[1];
+    const c = bucket.tw;
     card.classList.add(c.bg, c.border);
     document.getElementById("rLevel").textContent = level;
     document.getElementById("rLevel").classList.add(c.text);
-    document.getElementById("rDesc").textContent = descs[level] || "";
+    document.getElementById("rDesc").textContent = bucket.desc || "";
     document.getElementById("rScore").textContent = isNaN(score) ? "—" : score;
     if (email) document.getElementById("rEmail").textContent = `· ${email}`;
     if (from === "user") document.getElementById("ctaSignup").classList.add("hidden");

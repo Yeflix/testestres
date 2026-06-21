@@ -3,13 +3,20 @@ service cloud.firestore {
   match /databases/{database}/documents {
 
     function isSignedIn() { return request.auth != null; }
+
+    // Admin = existe documento en /admins/{email} Y (no tiene campo 'role' O role == 'admin').
+    // El "no tiene campo role" es compatibilidad con documentos antiguos, igual que
+    // hace isAdminEmail() en el cliente (assets/js/firebase-init.js). Antes esta función
+    // solo comprobaba exists(), por lo que un documento con role:"user" (pensado para
+    // NO ser admin) igual obtenía acceso total de admin a /responses y /users.
     function isAdmin() {
-      return isSignedIn() &&
-             exists(/databases/$(database)/documents/admins/$(request.auth.token.email.lower()));
+      let adminPath = /databases/$(database)/documents/admins/$(request.auth.token.email.lower());
+      return isSignedIn() && exists(adminPath) &&
+             (!('role' in get(adminPath).data) || get(adminPath).data.role == 'admin');
     }
 
     // Cualquiera puede crear una respuesta (incluso anónimos del link).
-    // Solo el dueño (userId) o un admin pueden leer.
+    // Solo el dueño (userId/email) o un admin pueden leer.
     match /responses/{id} {
       allow create: if request.resource.data.keys().hasOnly(
                        ['email','name','phone','userId','isAnonymous','answers','score','level','createdAt'])
@@ -17,17 +24,28 @@ service cloud.firestore {
                     && request.resource.data.score is int
                     && request.resource.data.score >= 0
                     && request.resource.data.score <= 72;
-
       allow read: if isAdmin()
                   || (isSignedIn() && resource.data.userId == request.auth.uid)
                   || (isSignedIn() && resource.data.email == request.auth.token.email.lower());
-
       allow update, delete: if isAdmin();
     }
 
-    // Solo admins pueden leer la lista de admins
+    // NUEVO: perfil de cada usuario (nombre, apellido, edad, sexo, cédula, etc.).
+    // Sin esta regla, /users quedaba sin match -> Firestore lo deniega por defecto,
+    // lo que rompía el guardado de perfil al registrarse (auth.js) y la lectura de
+    // perfil en test.js. El admin necesita poder leer todos para el export en Excel.
+    match /users/{uid} {
+      allow create: if isSignedIn() && request.auth.uid == uid;
+      allow update: if isSignedIn() && request.auth.uid == uid;
+      allow read:   if isAdmin() || (isSignedIn() && request.auth.uid == uid);
+      allow delete: if false;
+    }
+
+    // Lista de admins. Antes: allow read: if isSignedIn() (cualquiera podía leer
+    // el doc de CUALQUIER email, no solo el suyo). Se restringe a que cada usuario
+    // solo pueda leer su propio documento, que es todo lo que necesita isAdminEmail().
     match /admins/{email} {
-      allow read: if isSignedIn();   // necesario para que cada usuario verifique su propio rol
+      allow read: if isSignedIn() && request.auth.token.email.lower() == email;
       allow write: if isAdmin();
     }
   }

@@ -3,6 +3,7 @@ import {
   collection, query, orderBy, getDocs, isAdminEmail
 } from "./firebase-init.js";
 import { QUESTIONS, SCALE_LABELS, RESULTS_MAP } from "./questions.js";
+import { toast } from "./nav.js";
 
 let ALL = [];
 
@@ -11,13 +12,38 @@ onAuthStateChanged(auth, async (user) => {
   const admin = await isAdminEmail(user.email);
   if (!admin) { alert("No tienes permisos de administrador."); location.href = "dashboard.html"; return; }
 
-  const snap = await getDocs(query(collection(db, "responses"), orderBy("createdAt", "desc")));
-  ALL = snap.docs.map(d => {
-    const x = d.data();
-    return { id: d.id, ...x, createdAt: x.createdAt?.toDate?.() || null };
-  });
-  renderStats();
-  applyFilters();
+  try {
+    const [responsesSnap, usersSnap] = await Promise.all([
+      getDocs(query(collection(db, "responses"), orderBy("createdAt", "desc"))),
+      getDocs(collection(db, "users")),
+    ]);
+
+    // Mapa uid -> perfil. "responses" solo guarda email/name/phone (ver test.js),
+    // así que Apellido/Cédula/Edad/Sexo/Tiempo laborando se completan aquí cruzando
+    // por userId con la colección "users" (donde sí se guardan en el registro).
+    const profiles = new Map();
+    usersSnap.docs.forEach(d => profiles.set(d.id, d.data()));
+
+    ALL = responsesSnap.docs.map(d => {
+      const x = d.data();
+      const profile = x.userId ? profiles.get(x.userId) : null;
+      return {
+        id: d.id,
+        ...x,
+        createdAt: x.createdAt?.toDate?.() || null,
+        lastName: profile?.lastName || "",
+        cedula: profile?.cedula || "",
+        age: profile?.age ?? "",
+        gender: profile?.gender || "",
+        workTime: profile?.workTime || "",
+      };
+    });
+    renderStats();
+    applyFilters();
+  } catch (err) {
+    console.error(err);
+    toast("No se pudieron cargar los datos. Revisa tu conexión o tus permisos.", "error");
+  }
 });
 
 function colorFor(level) { return (RESULTS_MAP.find(r => r.level === level) || {}).color || "#64748b"; }

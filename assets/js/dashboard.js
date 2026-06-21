@@ -3,28 +3,34 @@ import {
   collection, query, where, orderBy, getDocs
 } from "./firebase-init.js";
 import { RESULTS_MAP } from "./questions.js";
+import { toast } from "./nav.js";
 
 onAuthStateChanged(auth, async (user) => {
   if (!user) { location.href = "auth.html"; return; }
   document.getElementById("userName").textContent = user.displayName || user.email;
 
-  // Carga responses del usuario por userId O por email (para que se vean
-  // tests hechos anónimamente antes del registro, con el mismo correo).
-  const q1 = query(collection(db, "responses"), where("userId", "==", user.uid));
-  const q2 = query(collection(db, "responses"), where("email", "==", user.email.toLowerCase()));
+  try {
+    // Carga responses del usuario por userId O por email (para que se vean
+    // tests hechos anónimamente antes del registro, con el mismo correo).
+    const q1 = query(collection(db, "responses"), where("userId", "==", user.uid));
+    const q2 = query(collection(db, "responses"), where("email", "==", user.email.toLowerCase()));
 
-  const [s1, s2] = await Promise.all([getDocs(q1), getDocs(q2)]);
-  const seen = new Set();
-  const items = [];
-  [...s1.docs, ...s2.docs].forEach(d => {
-    if (seen.has(d.id)) return; seen.add(d.id);
-    const data = d.data();
-    items.push({ id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null });
-  });
-  items.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+    const [s1, s2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+    const seen = new Set();
+    const items = [];
+    [...s1.docs, ...s2.docs].forEach(d => {
+      if (seen.has(d.id)) return; seen.add(d.id);
+      const data = d.data();
+      items.push({ id: d.id, ...data, createdAt: data.createdAt?.toDate?.() || null });
+    });
+    items.sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
 
-  renderStats(items);
-  renderHistory(items);
+    renderStats(items);
+    renderHistory(items);
+  } catch (err) {
+    console.error(err);
+    toast("No se pudo cargar tu historial. Revisa tu conexión.", "error");
+  }
 });
 
 function colorFor(level) {

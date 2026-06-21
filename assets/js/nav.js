@@ -19,7 +19,42 @@ export function mountNav(activePath = "") {
   document.body.prepend(nav);
 
   const slot = nav.querySelector("#navAuthSlot");
-  nav.querySelectorAll(`[data-nav="${activePath}"]`).forEach(a => a.classList.add("text-slate-900", "font-semibold"));
+
+  // Marca como activo cualquier elemento [data-nav] que coincida con la página actual.
+  // Se llama tras crear el nav Y cada vez que se vuelve a pintar #navAuthSlot, porque
+  // los links de "Mi panel"/"Admin" viven ahí y se generan después (de forma async).
+  function highlightActive() {
+    nav.querySelectorAll("[data-nav]").forEach(a => a.classList.remove("text-slate-900", "font-semibold"));
+    nav.querySelectorAll(`[data-nav="${activePath}"]`).forEach(a => a.classList.add("text-slate-900", "font-semibold"));
+  }
+  highlightActive();
+
+  // Helpers del menú móvil. Operan sobre lo que haya AHORA en el DOM (no sobre una
+  // referencia capturada), así no importa cuántas veces se vuelva a renderizar el slot.
+  function getMenuEls() {
+    return {
+      menu: slot.querySelector(".mobile-nav-dropdown"),
+      btn: slot.querySelector(".mobile-nav-trigger"),
+    };
+  }
+  function toggleMenu(show) {
+    const { menu, btn } = getMenuEls();
+    if (!menu) return;
+    const willShow = show === undefined ? !menu.classList.contains("open") : show;
+    menu.classList.toggle("open", willShow);
+    btn?.classList.toggle("open", willShow);
+  }
+
+  // Listeners GLOBALES: se registran una sola vez por página (aquí, fuera de
+  // onAuthStateChanged). Antes se registraban dentro del callback de auth, que puede
+  // disparar más de una vez por carga (p. ej. al sincronizar sesión entre pestañas),
+  // acumulando listeners en `document` sin límite y rompiendo el menú con el tiempo.
+  document.addEventListener("click", (e) => {
+    if (!slot.contains(e.target)) toggleMenu(false);
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") toggleMenu(false);
+  });
 
   onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -30,21 +65,20 @@ export function mountNav(activePath = "") {
     }
 
     const admin = await isAdminEmail(user.email);
-    const menuId = "mobileMenu" + Math.random().toString(36).slice(2, 9);
 
     slot.innerHTML = `
-      ${admin ? `<a href="admin.html" class="hidden md:inline rounded-full bg-amber-100 text-amber-800 px-3 py-1.5 text-xs font-bold">ADMIN</a>` : ""}
+      ${admin ? `<a href="admin.html" data-nav="admin" class="hidden md:inline rounded-full bg-amber-100 text-amber-800 px-3 py-1.5 text-xs font-bold">ADMIN</a>` : ""}
 
       <!-- Escritorio: link directo a Mi panel -->
-      <a href="dashboard.html" class="hidden sm:inline rounded-full border border-slate-200 px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap">Mi panel</a>
+      <a href="dashboard.html" data-nav="dashboard" class="hidden sm:inline rounded-full border border-slate-200 px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap">Mi panel</a>
 
       <!-- Móvil: botón desplegable con todas las opciones -->
-      <button id="${menuId}Btn" type="button" class="sm:hidden mobile-nav-trigger rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap flex items-center gap-1.5">
+      <button type="button" class="sm:hidden mobile-nav-trigger rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap flex items-center gap-1.5">
         Mi panel <i class="fas fa-chevron-down text-[10px] transition-transform duration-200"></i>
       </button>
 
-      <div id="${menuId}" class="mobile-nav-dropdown">
-        <a href="dashboard.html" class="${activePath === "" ? "text-slate-900 font-semibold" : ""}">
+      <div class="mobile-nav-dropdown">
+        <a href="dashboard.html" class="${activePath === "dashboard" ? "text-slate-900 font-semibold" : ""}">
           <i class="fas fa-user w-4 text-center"></i> Mi panel
         </a>
         <a href="index.html" class="${activePath === "index" ? "text-slate-900 font-semibold" : ""}">
@@ -53,7 +87,7 @@ export function mountNav(activePath = "") {
         <a href="info.html" class="${activePath === "info" ? "text-slate-900 font-semibold" : ""}">
           <i class="fas fa-info-circle w-4 text-center"></i> Información
         </a>
-        ${admin ? `<a href="admin.html" class="text-amber-700 font-bold"><i class="fas fa-shield-alt w-4 text-center"></i> Admin</a>` : ""}
+        ${admin ? `<a href="admin.html" class="${activePath === "admin" ? "text-slate-900 font-semibold" : "text-amber-700 font-bold"}"><i class="fas fa-shield-alt w-4 text-center"></i> Admin</a>` : ""}
         <div class="my-1 h-px bg-slate-100"></div>
         <button type="button" class="logout-mobile text-red-600">
           <i class="fas fa-sign-out-alt w-4 text-center"></i> Salir
@@ -63,31 +97,18 @@ export function mountNav(activePath = "") {
       <button type="button" class="logout-desktop hidden sm:inline rounded-full bg-slate-900 text-white px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-800 whitespace-nowrap">Salir</button>
     `;
 
-    // Destaca la opción activa en el menú móvil (dashboard = activePath vacío)
-    const menu = slot.querySelector(`#${menuId}`);
-    const btn = slot.querySelector(`#${menuId}Btn`);
+    highlightActive();
 
-    function toggleMenu(show) {
-      const willShow = show === undefined ? !menu.classList.contains("open") : show;
-      menu.classList.toggle("open", willShow);
-      btn.classList.toggle("open", willShow);
-    }
+    const { menu, btn } = getMenuEls();
 
-    btn.addEventListener("click", (e) => {
+    // Estos listeners SÍ se pueden reatachar en cada render: van sobre elementos que
+    // se acaban de crear con innerHTML, así que no hay listeners viejos acumulándose
+    // (el nodo anterior, con su listener, se descarta junto con el HTML reemplazado).
+    btn?.addEventListener("click", (e) => {
       e.stopPropagation();
       toggleMenu();
     });
-
-    document.addEventListener("click", (e) => {
-      if (!slot.contains(e.target)) toggleMenu(false);
-    });
-
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") toggleMenu(false);
-    });
-
-    // Cerrar menú al hacer clic en cualquier opción del dropdown
-    menu.querySelectorAll("a, button").forEach(el => {
+    menu?.querySelectorAll("a, button").forEach(el => {
       el.addEventListener("click", () => toggleMenu(false));
     });
 

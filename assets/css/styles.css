@@ -1,7 +1,3 @@
-:root {
-  --color-1:#10b981; --color-2:#14b8a6; --color-3:#eab308;
-  --color-4:#f97316; --color-5:#ef4444; --color-6:#991b1b;
-}
 body { font-family: 'Inter', system-ui, sans-serif; background: hsl(220 33% 98%); color: hsl(222 47% 11%); }
 @keyframes fadeInUp { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: translateY(0); } }
 .animate-reveal { animation: fadeInUp .6s cubic-bezier(.19,1,.22,1) both; }

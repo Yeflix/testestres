@@ -92,6 +92,22 @@ registerForm.addEventListener("submit", async (e) => {
 document.getElementById("googleBtn").addEventListener("click", async () => {
   try {
     const cred = await signInWithPopup(auth, googleProvider);
+
+    // Con email/contraseña el perfil (nombre, apellido, edad, sexo, cédula...) se
+    // guarda en el formulario de registro. Con Google no había ningún paso
+    // equivalente, así que el usuario nunca aparecía en users/{uid} y el cruce de
+    // datos del panel admin (admin.js) no tenía nada que mostrar para él.
+    // No usamos createdAt aquí: con merge:true se reescribiría en cada login,
+    // perdiendo la fecha real de creación de la cuenta.
+    const display = (cred.user.displayName || "").trim();
+    const [first, ...rest] = display.split(/\s+/).filter(Boolean);
+    await setDoc(doc(db, "users", cred.user.uid), {
+      uid: cred.user.uid,
+      email: cred.user.email,
+      name: first || "",
+      lastName: rest.join(" "),
+    }, { merge: true });
+
     await routeAfterLogin(cred.user);
   } catch (err) { toast(traduce(err), "error"); }
 });
