@@ -44,3 +44,77 @@ body { font-family: 'Inter', system-ui, sans-serif; background: hsl(220 33% 98%)
 @media (max-width: 640px) {
   table th, table td { padding-left: .75rem !important; padding-right: .75rem !important; white-space: nowrap; }
 }
+
+/* Escala 1-6 en pantallas muy pequeñas: tipografía y altura mínima táctil */
+@media (max-width: 360px) {
+  .scale-btn .swatch { font-size: .75rem; min-height: 36px; }
+}
+
+/* Mejor scroll en contenedores con overflow-x (tablas, filtros) */
+.overflow-x-auto { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+
+/* Evita que enlaces/correos largos rompan el layout */
+a, .break-anywhere { overflow-wrap: anywhere; word-break: break-word; }
+
+/* ---------- Menú desplegable móvil del header ---------- */
+.mobile-nav-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 190px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  box-shadow: 0 12px 40px rgba(15, 23, 42, 0.15);
+  padding: 0.5rem;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top right;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+  z-index: 50;
+  pointer-events: none;
+}
+.mobile-nav-dropdown.open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+.mobile-nav-dropdown a,
+.mobile-nav-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #475569;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.mobile-nav-dropdown a:hover,
+.mobile-nav-dropdown button:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+.mobile-nav-dropdown i {
+  color: #64748b;
+}
+.mobile-nav-trigger i {
+  transition: transform 0.2s ease;
+}
+.mobile-nav-trigger.open i {
+  transform: rotate(180deg);
+}
+@media (min-width: 640px) {
+  .mobile-nav-dropdown,
+  .mobile-nav-trigger { display: none !important; }
+}
+

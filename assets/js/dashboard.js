@@ -75,10 +75,10 @@ function renderHistory(items) {
     const tr = diff === null ? "—" : diff < 0 ? `<span class="text-emerald-600">↓ ${Math.abs(diff)}</span>` : diff > 0 ? `<span class="text-red-600">↑ ${diff}</span>` : `<span class="text-slate-500">=</span>`;
     return `
       <tr>
-        <td class="px-6 py-3 text-slate-700">${date}</td>
-        <td class="px-6 py-3 font-mono font-bold">${it.score}</td>
-        <td class="px-6 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold" style="background:${colorFor(it.level)}1a;color:${colorFor(it.level)}">${it.level}</span></td>
-        <td class="px-6 py-3 font-mono text-sm">${tr}</td>
+        <td class="px-4 sm:px-6 py-3 text-slate-700">${date}</td>
+        <td class="px-4 sm:px-6 py-3 font-mono font-bold">${it.score}</td>
+        <td class="px-4 sm:px-6 py-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold" style="background:${colorFor(it.level)}1a;color:${colorFor(it.level)}">${it.level}</span></td>
+        <td class="px-4 sm:px-6 py-3 font-mono text-sm">${tr}</td>
       </tr>`;
   }).join("");
 }

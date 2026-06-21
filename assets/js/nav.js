@@ -1,4 +1,4 @@
-// Navbar dinámico con estado de sesión, presente en todas las páginas
+// ============= Navbar dinámico con estado de sesión, presente en todas las páginas =============
 import { auth, onAuthStateChanged, signOut, isAdminEmail } from "./firebase-init.js";
 
 export function mountNav(activePath = "") {
@@ -13,7 +13,7 @@ export function mountNav(activePath = "") {
       <div class="flex shrink-0 items-center gap-1.5 sm:gap-4 text-sm">
         <a href="index.html" data-nav="index" class="hidden sm:inline text-slate-600 hover:text-slate-900 font-medium">Test</a>
         <a href="info.html" data-nav="info" class="hidden sm:inline text-slate-600 hover:text-slate-900 font-medium">Información</a>
-        <div id="navAuthSlot" class="flex items-center gap-1.5 sm:gap-2"></div>
+        <div id="navAuthSlot" class="relative flex items-center gap-1.5 sm:gap-2"></div>
       </div>
     </div>`;
   document.body.prepend(nav);
@@ -28,15 +28,75 @@ export function mountNav(activePath = "") {
       `;
       return;
     }
+
     const admin = await isAdminEmail(user.email);
+    const menuId = "mobileMenu" + Math.random().toString(36).slice(2, 9);
+
     slot.innerHTML = `
       ${admin ? `<a href="admin.html" class="hidden md:inline rounded-full bg-amber-100 text-amber-800 px-3 py-1.5 text-xs font-bold">ADMIN</a>` : ""}
-      <a href="dashboard.html" class="rounded-full border border-slate-200 px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap">Mi panel</a>
-      <button id="logoutBtn" class="rounded-full bg-slate-900 text-white px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-800 whitespace-nowrap">Salir</button>
+
+      <!-- Escritorio: link directo a Mi panel -->
+      <a href="dashboard.html" class="hidden sm:inline rounded-full border border-slate-200 px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap">Mi panel</a>
+
+      <!-- Móvil: botón desplegable con todas las opciones -->
+      <button id="${menuId}Btn" type="button" class="sm:hidden mobile-nav-trigger rounded-full border border-slate-200 px-3 py-2 text-xs font-semibold hover:bg-slate-50 whitespace-nowrap flex items-center gap-1.5">
+        Mi panel <i class="fas fa-chevron-down text-[10px] transition-transform duration-200"></i>
+      </button>
+
+      <div id="${menuId}" class="mobile-nav-dropdown">
+        <a href="dashboard.html" class="${activePath === "" ? "text-slate-900 font-semibold" : ""}">
+          <i class="fas fa-user w-4 text-center"></i> Mi panel
+        </a>
+        <a href="index.html" class="${activePath === "index" ? "text-slate-900 font-semibold" : ""}">
+          <i class="fas fa-clipboard-check w-4 text-center"></i> Test
+        </a>
+        <a href="info.html" class="${activePath === "info" ? "text-slate-900 font-semibold" : ""}">
+          <i class="fas fa-info-circle w-4 text-center"></i> Información
+        </a>
+        ${admin ? `<a href="admin.html" class="text-amber-700 font-bold"><i class="fas fa-shield-alt w-4 text-center"></i> Admin</a>` : ""}
+        <div class="my-1 h-px bg-slate-100"></div>
+        <button type="button" class="logout-mobile text-red-600">
+          <i class="fas fa-sign-out-alt w-4 text-center"></i> Salir
+        </button>
+      </div>
+
+      <button type="button" class="logout-desktop hidden sm:inline rounded-full bg-slate-900 text-white px-3 sm:px-4 py-2 text-xs font-semibold hover:bg-slate-800 whitespace-nowrap">Salir</button>
     `;
-    slot.querySelector("#logoutBtn").addEventListener("click", async () => {
-      await signOut(auth);
-      location.href = "index.html";
+
+    // Destaca la opción activa en el menú móvil (dashboard = activePath vacío)
+    const menu = slot.querySelector(`#${menuId}`);
+    const btn = slot.querySelector(`#${menuId}Btn`);
+
+    function toggleMenu(show) {
+      const willShow = show === undefined ? !menu.classList.contains("open") : show;
+      menu.classList.toggle("open", willShow);
+      btn.classList.toggle("open", willShow);
+    }
+
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    document.addEventListener("click", (e) => {
+      if (!slot.contains(e.target)) toggleMenu(false);
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") toggleMenu(false);
+    });
+
+    // Cerrar menú al hacer clic en cualquier opción del dropdown
+    menu.querySelectorAll("a, button").forEach(el => {
+      el.addEventListener("click", () => toggleMenu(false));
+    });
+
+    // Logout: ambos botones (desktop y móvil)
+    slot.querySelectorAll(".logout-desktop, .logout-mobile").forEach(btnLogout => {
+      btnLogout.addEventListener("click", async () => {
+        await signOut(auth);
+        location.href = "index.html";
+      });
     });
   });
 }
