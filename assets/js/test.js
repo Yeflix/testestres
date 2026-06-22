@@ -9,18 +9,32 @@ const progressCount = document.getElementById("progressCount");
 const emailInput = document.getElementById("userEmail");
 const nameInput = document.getElementById("userName");
 const phoneInput = document.getElementById("userPhone");
+const yearsInput = document.getElementById("userYearsService");
 const loggedHint = document.getElementById("loggedHint");
 const submitBtn = document.getElementById("submitBtn");
 
 let currentUser = null;
 
-onAuthStateChanged(auth, (u) => {
+onAuthStateChanged(auth, async (u) => {
   currentUser = u;
   if (u) {
     emailInput.value = u.email || "";
     emailInput.readOnly = true;
     if (u.displayName && !nameInput.value) nameInput.value = u.displayName;
     loggedHint.classList.remove("hidden");
+    // Prellenar desde perfil si existe
+    try {
+      const psnap = await getDoc(doc(db, "users", u.uid));
+      if (psnap.exists()) {
+        const p = psnap.data() || {};
+        if (p.phone && !phoneInput.value) phoneInput.value = p.phone;
+        if ((p.yearsOfService ?? p.workTime) && !yearsInput.value) {
+          yearsInput.value = p.yearsOfService ?? p.workTime;
+        }
+        const full = [p.name, p.lastName].filter(Boolean).join(" ").trim();
+        if (full && !nameInput.value) nameInput.value = full;
+      }
+    } catch (_) {}
   }
 });
 
@@ -75,6 +89,13 @@ form.addEventListener("submit", async (e) => {
     toast("Ingresa un correo válido", "error");
     emailInput.focus(); return;
   }
+  const yearsRaw = yearsInput.value.trim();
+  if (yearsRaw === "" || isNaN(Number(yearsRaw)) || Number(yearsRaw) < 0) {
+    toast("Indica tus años de servicio", "error");
+    yearsInput.focus(); return;
+  }
+  const yearsOfService = Number(yearsRaw);
+
   const { answers, missing } = readAnswers();
   if (missing !== -1) {
     const el = document.querySelector(`[data-q="${missing}"]`);
@@ -86,24 +107,19 @@ form.addEventListener("submit", async (e) => {
   submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
   try {
-    // Si esta logueado, intenta obtener perfil para enriquecer la respuesta
     let profile = {};
     if (currentUser) {
       try {
         const psnap = await getDoc(doc(db, "users", currentUser.uid));
         if (psnap.exists()) profile = psnap.data() || {};
-      } catch (_) {
-        // Fallará silenciosamente si las reglas de Firestore bloquean la lectura, 
-        // permitiendo que el flujo principal continúe.
-      }
+      } catch (_) {}
     }
 
-    // Payload ajustado para cumplir con: 
-    // ['email','name','phone','userId','isAnonymous','answers','score','level','createdAt']
     await addDoc(collection(db, "responses"), {
       email,
-      name: profile.name || nameInput.value.trim() || null,
-      phone: phoneInput.value.trim() || null,
+      name: profile.name ? `${profile.name} ${profile.lastName || ""}`.trim() : (nameInput.value.trim() || null),
+      phone: phoneInput.value.trim() || profile.phone || null,
+      yearsOfService,
       userId: currentUser?.uid || null,
       isAnonymous: !currentUser,
       answers,

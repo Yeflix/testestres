@@ -1,6 +1,7 @@
 import {
   auth, db, onAuthStateChanged,
-  collection, query, where, orderBy, getDocs
+  collection, query, where, orderBy, getDocs,
+  doc, getDoc
 } from "./firebase-init.js";
 import { RESULTS_MAP } from "./questions.js";
 import { toast } from "./nav.js";
@@ -8,6 +9,14 @@ import { toast } from "./nav.js";
 onAuthStateChanged(auth, async (user) => {
   if (!user) { location.href = "auth.html"; return; }
   document.getElementById("userName").textContent = user.displayName || user.email;
+
+  // Cargar perfil personal
+  try {
+    const psnap = await getDoc(doc(db, "users", user.uid));
+    renderProfile(psnap.exists() ? psnap.data() : null, user);
+  } catch (e) { renderProfile(null, user); }
+
+
 
   try {
     // Carga responses del usuario por userId O por email (para que se vean
@@ -87,4 +96,26 @@ function renderHistory(items) {
         <td class="px-4 sm:px-6 py-3 font-mono text-sm">${tr}</td>
       </tr>`;
   }).join("");
+}
+
+function renderProfile(p, user) {
+  const grid = document.getElementById("profileSummary");
+  const incomplete = document.getElementById("profileIncomplete");
+  const fields = [
+    ["Nombre", [p?.name, p?.lastName].filter(Boolean).join(" ") || (user.displayName || "—")],
+    ["Correo", user.email || "—"],
+    ["Edad", p?.age ?? "—"],
+    ["Sexo", p?.gender || "—"],
+    ["Teléfono", p?.phone || "—"],
+    ["Cédula", p?.cedula || "—"],
+    ["Años de servicio", (p?.yearsOfService ?? p?.workTime) ?? "—"],
+  ];
+  grid.innerHTML = fields.map(([k, v]) => `
+    <div>
+      <p class="font-mono text-[10px] text-slate-500 uppercase tracking-widest">${k}</p>
+      <p class="mt-0.5 font-semibold text-slate-800 break-words">${v}</p>
+    </div>
+  `).join("");
+  const complete = p && p.name && p.lastName && p.age && p.gender;
+  incomplete.classList.toggle("hidden", Boolean(complete));
 }

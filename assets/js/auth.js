@@ -3,7 +3,7 @@ import {
   signInWithEmailAndPassword, createUserWithEmailAndPassword,
   signInWithPopup, sendPasswordResetEmail, updateProfile,
   onAuthStateChanged, isAdminEmail,
-  doc, setDoc, serverTimestamp
+  doc, getDoc, setDoc, serverTimestamp
 } from "./firebase-init.js";
 
 const loginForm = document.getElementById("loginForm");
@@ -38,9 +38,23 @@ function toast(msg, type="") {
   setTimeout(() => { t.remove(); }, 3500);
 }
 
+function isProfileComplete(p) {
+  if (!p) return false;
+  return Boolean(p.name && p.lastName && p.age && p.gender);
+}
+
 async function routeAfterLogin(user) {
   const admin = await isAdminEmail(user.email);
-  location.href = admin ? "admin.html" : "dashboard.html";
+  if (admin) { location.href = "admin.html"; return; }
+  try {
+    const snap = await getDoc(doc(db, "users", user.uid));
+    const profile = snap.exists() ? snap.data() : null;
+    if (!isProfileComplete(profile)) {
+      location.href = "profile.html?complete=1";
+      return;
+    }
+  } catch (_) {}
+  location.href = "dashboard.html";
 }
 
 loginForm.addEventListener("submit", async (e) => {

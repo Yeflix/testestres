@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Mi perfil · Astronauta Emocional</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+<body class="bg-slate-50 text-slate-900">
+
+<main class="mx-auto max-w-2xl px-4 sm:px-6 py-8 sm:py-12 animate-reveal">
+  <div class="mb-6">
+    <span class="font-mono text-[11px] text-slate-500 uppercase tracking-widest">Datos personales</span>
+    <h1 class="mt-1 text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight">Mi perfil</h1>
+    <p id="profileHint" class="mt-2 text-sm text-slate-600">Completa o actualiza tu información personal.</p>
+  </div>
+
+  <form id="profileForm" class="rounded-2xl border border-slate-200 bg-white p-4 sm:p-6 md:p-8 shadow-sm space-y-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pName">Nombre *</label>
+        <input type="text" id="pName" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pLastName">Apellido *</label>
+        <input type="text" id="pLastName" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-bold uppercase text-slate-500" for="pEmail">Correo</label>
+      <input type="email" id="pEmail" readonly class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-100 px-3 py-2.5 text-sm text-slate-500" />
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pAge">Edad *</label>
+        <input type="number" id="pAge" required min="14" max="100" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pGender">Sexo *</label>
+        <select id="pGender" required class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none">
+          <option value="">Selecciona</option>
+          <option value="Mujer">Mujer</option>
+          <option value="Hombre">Hombre</option>
+          <option value="No-decir">Prefiero no decirlo</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pPhone">Teléfono</label>
+        <input type="tel" id="pPhone" placeholder="+58 412 000 0000" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+      <div>
+        <label class="text-[11px] font-bold uppercase text-slate-500" for="pCedula">Cédula</label>
+        <input type="text" id="pCedula" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+      </div>
+    </div>
+
+    <div>
+      <label class="text-[11px] font-bold uppercase text-slate-500" for="pYearsService">Años de servicio</label>
+      <input type="number" id="pYearsService" min="0" max="80" step="0.5" placeholder="Ej: 5" class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 focus:outline-none" />
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-3 pt-2">
+      <button type="submit" id="saveBtn" class="rounded-full bg-slate-900 text-white px-6 py-3 text-sm font-bold hover:bg-slate-800">Guardar cambios</button>
+      <a href="dashboard.html" class="rounded-full border border-slate-200 px-6 py-3 text-sm font-semibold text-center hover:bg-slate-50">Cancelar</a>
+    </div>
+  </form>
+</main>
+
+<script type="module" src="assets/js/profile.js"></script>
+<script type="module">
+  import { mountNav } from "./assets/js/nav.js";
+  mountNav("profile");
+</script>
+</body>
+</html>
